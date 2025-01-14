@@ -2,8 +2,7 @@ from homeassistant import config_entries
 import voluptuous as vol
 from homeassistant.core import callback
 
-from .const import DOMAIN
-
+DOMAIN = "click4food"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 
