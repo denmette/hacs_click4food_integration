@@ -39,17 +39,17 @@ class Click4FoodConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=data_schema, errors=errors
         )
 
-async def _test_credentials(self, username, password):
-    """Test de inloggegevens."""
-    try:
-        from .api import login_to_click4food
+    async def _test_credentials(self, username, password):
+        """Test de inloggegevens."""
+        try:
+            from .api import login_to_click4food
 
-        # Test alleen de login
-        login_to_click4food(username, password)
-        return True
-    except Exception as e:
-        _LOGGER.error(f"Credential test failed: {e}")
-        return False
+            # Test alleen de login
+            login_to_click4food(username, password)
+            return True
+        except Exception as e:
+            _LOGGER.error(f"Credential test failed: {e}")
+            return False
 
     @staticmethod
     @callback
