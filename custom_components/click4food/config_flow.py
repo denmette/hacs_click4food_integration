@@ -2,6 +2,7 @@ from homeassistant import config_entries
 import voluptuous as vol
 from homeassistant.core import callback
 import logging
+from .api import login_to_click4food
 
 DOMAIN = "click4food"
 CONF_USERNAME = "username"
@@ -44,10 +45,8 @@ class Click4FoodConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _test_credentials(self, username, password):
         """Test de inloggegevens."""
         try:
-            from .api import login_to_click4food
-
-            # Test alleen de login
-            login_to_click4food(username, password)
+            session = await login_to_click4food(username, password)
+            await session.close()  # Sluit de sessie na de test
             return True
         except Exception as e:
             _LOGGER.error(f"Credential test failed: {e}")

@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import aiohttp
 import logging
 
 _LOGGER = logging.getLogger(__name__)
@@ -15,24 +16,38 @@ HEADERS = {
     "X-Requested-With": "XMLHttpRequest",
 }
 
-def login_to_click4food(username, password):
+async def login_to_click4food(username, password):
     """
-    Login to Click4Food and return a session object.
+    Asynchronous login to Click4Food and return an aiohttp.ClientSession.
     """
-    session = requests.Session()
+    session = aiohttp.ClientSession()
     login_payload = {
         "txtLogin": username,
         "txtPassword": password,
     }
-    response = session.post(LOGIN_URL, data=login_payload, headers=HEADERS)
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-    if response.status_code != 200 or "JSESSIONID" not in session.cookies:
-        _LOGGER.error(f"Login failed with status code: {response.status_code}")
-        _LOGGER.debug(f"Response text: {response.text}")
-        raise Exception("Invalid username or password")
+    try:
+        async with session.post(LOGIN_URL, data=login_payload, headers=headers) as response:
+            if response.status != 200:
+                _LOGGER.error(f"Login failed with status code: {response.status}")
+                raise Exception("Invalid username or password")
 
-    _LOGGER.debug("Login successful")
-    return session
+            cookies = response.cookies
+            if "JSESSIONID" not in cookies:
+                _LOGGER.error("JSESSIONID cookie not found after login")
+                raise Exception("Invalid username or password")
+
+            _LOGGER.debug("Login successful")
+            return session  # Retourneer de sessie voor verder gebruik
+
+    except Exception as e:
+        await session.close()  # Zorg dat de sessie wordt gesloten bij fouten
+        _LOGGER.error(f"Login error: {e}")
+        raise
 
 def fetch_click4food_data(session):
     """
