@@ -1,10 +1,12 @@
 from homeassistant import config_entries
 import voluptuous as vol
 from homeassistant.core import callback
+import logging
 
 DOMAIN = "click4food"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
+_LOGGER = logging.getLogger(__name__)
 
 class Click4FoodConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Click4Food."""
