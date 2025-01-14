@@ -1,0 +1,10 @@
+{
+  "domain": "click4food",
+  "name": "Click4Food",
+  "documentation": "https://github.com/denmette/click4food-homeassistant",
+  "requirements": ["requests", "beautifulsoup4"],
+  "dependencies": [],
+  "version": "0.1.0",
+  "codeowners": ["@denmette"],
+  "config_flow": true
+}
